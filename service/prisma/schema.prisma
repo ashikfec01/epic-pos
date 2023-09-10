@@ -1,0 +1,371 @@
+// This is your Prisma schema file,
+// learn more about it in the docs  https //pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String     @id @unique @default(uuid())
+  username          String     @unique
+  password_salt     String
+  password_hash_key String
+  email             String     @unique
+  phone             String     @default("+880 123456")
+  name              String     @default("EMPTY")
+  role              UserRole[]
+  created_at        DateTime   @default(now())
+  updated_at        DateTime   @default(now()) @updatedAt
+}
+
+model Role {
+  id          String           @id @unique @default(uuid())
+  name        String           @default("EMPTY")
+  description String           @default("EMPTY")
+  role        String           @unique
+  status      String           @default("DEFAULT") @ignore
+  users       UserRole[]
+  permissions RolePermission[]
+  created_at  DateTime         @default(now())
+  updated_at  DateTime         @default(now()) @updatedAt
+}
+
+model Permission {
+  id              String           @id @default(uuid())
+  feature         String
+  permission_name String
+  roles           RolePermission[]
+  created_at      DateTime         @default(now())
+  updated_at      DateTime         @updatedAt
+}
+
+model ApiResource {
+  id         String     @id @default(uuid())
+  name       String     @unique
+  method     ApiMethod? @relation(fields: [method_id], references: [id])
+  method_id  String?
+  created_at DateTime   @default(now())
+  updated_at DateTime   @default(now()) @updatedAt
+}
+
+model ApiMethod {
+  id         String        @id @default(uuid())
+  get        Boolean
+  post       Boolean
+  patch      Boolean
+  put        Boolean
+  delete     Boolean
+  resource   ApiResource[]
+  created_at DateTime      @default(now())
+  updated_at DateTime      @default(now()) @updatedAt
+}
+
+model Brand {
+  id          String         @id @default(uuid())
+  name        String
+  description String
+  products    ProductBrand[]
+  created_at  DateTime       @default(now())
+  updated_at  DateTime       @default(now()) @updatedAt
+}
+
+model Product {
+  id                        String                @id @default(uuid())
+  sku                       String                @unique
+  name                      String                @unique
+  description               String
+  photo                     String
+  unit_price                String
+  qty                       String
+  default_comission_percent String
+  status                    String
+  low_stock_qty             String
+  categories                ProductsCategories[]
+  brands                    ProductBrand[]
+  racks                     ProductRack[]
+  menufacturers             ProductManufacturer[]
+  suppliers                 ProductSupplier[]
+  units                     ProductUnit[]
+  wastages                  ProductWastage[]
+  stocks_in                 ProductStockIn[]
+  stocks_out                ProductStockOut[]
+  created_at                DateTime              @default(now())
+  updated_at                DateTime              @default(now()) @updatedAt
+}
+
+model Warehouse {
+  id          String          @id @default(uuid())
+  name        String
+  address     String
+  description String
+  racks       WarehouseRack[]
+  created_at  DateTime        @default(now())
+  updated_at  DateTime        @default(now()) @updatedAt
+}
+
+model Rack {
+  id          String          @id @default(uuid())
+  name        String
+  description String
+  warehouse   WarehouseRack[]
+  products    ProductRack[]
+  created_at  DateTime        @default(now())
+  updated_at  DateTime        @default(now()) @updatedAt
+}
+
+model Supplier {
+  id                  String            @id @default(uuid())
+  name                String
+  address             String
+  phone               String
+  contact_person_name String
+  products            ProductSupplier[]
+  created_at          DateTime          @default(now())
+  updated_at          DateTime          @default(now()) @updatedAt
+}
+
+model Manufacturer {
+  id          String                @id @default(uuid())
+  name        String
+  description String
+  products    ProductManufacturer[]
+  created_at  DateTime              @default(now())
+  updated_at  DateTime              @default(now()) @updatedAt
+}
+
+model Unit {
+  id         String        @id @unique @default(uuid())
+  title      String
+  products   ProductUnit[]
+  created_at DateTime      @default(now())
+  updated_at DateTime      @default(now()) @updatedAt
+}
+
+model Wastage {
+  id             String           @id @default(uuid())
+  qty            Int
+  entry_datetime String
+  recorded_by    String
+  description    String
+  products       ProductWastage[]
+  created_at     DateTime         @default(now())
+  updated_at     DateTime         @default(now()) @updatedAt
+}
+
+model Stock {
+  id            String            @id @default(uuid())
+  qty           Int
+  per_unit_cost Float
+  recorded_by   String
+  chalan_number String
+  attachment    String
+  stock_out     ProductStockOut[]
+  product       ProductStockIn[]
+  created_at    DateTime          @default(now())
+  updated_at    DateTime          @default(now()) @updatedAt
+}
+
+// Pivot Tabels
+model UserRole {
+  user_id    String
+  role_id    String
+  role       Role     @relation(fields: [role_id], references: [id])
+  user       User     @relation(fields: [user_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+
+  @@id([user_id, role_id])
+}
+
+model RolePermission {
+  role_id       String
+  permission_id String
+  role          Role       @relation(fields: [role_id], references: [id])
+  permission    Permission @relation(fields: [permission_id], references: [id])
+  created_at    DateTime   @default(now())
+  updated_at    DateTime   @updatedAt
+
+  @@id([role_id, permission_id])
+}
+
+model ProductBrand {
+  brand_id   String
+  product_id String
+  brand      Brand    @relation(fields: [brand_id], references: [id])
+  product    Product  @relation(fields: [product_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@id([brand_id, product_id])
+}
+
+model Category {
+  id          String               @id @default(uuid())
+  name        String
+  description String
+  products    ProductsCategories[]
+  created_at  DateTime             @default(now())
+  updated_at  DateTime             @default(now()) @updatedAt
+}
+
+model ProductsCategories {
+  category_id String
+  product_id  String
+  products    Product  @relation(fields: [product_id], references: [id])
+  categories  Category @relation(fields: [category_id], references: [id])
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@id([category_id, product_id])
+}
+
+model ProductManufacturer {
+  product         Product      @relation(fields: [product_id], references: [id])
+  menufacturer    Manufacturer @relation(fields: [menufacturer_id], references: [id])
+  product_id      String
+  menufacturer_id String
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @updatedAt
+
+  @@id([menufacturer_id, product_id])
+}
+
+model ProductWastage {
+  product_id String
+  wastage_id String
+  wastage    Wastage  @relation(fields: [wastage_id], references: [id])
+  product    Product  @relation(fields: [product_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@id([product_id, wastage_id])
+}
+
+model File {
+  id           String   @id @default(uuid())
+  fieldname    String
+  originalname String
+  encoding     String
+  mimetype     String
+  destination  String
+  filename     String
+  path         String
+  size         Float
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+}
+
+model ProductSupplier {
+  product     Product  @relation(fields: [product_id], references: [id])
+  supplier    Supplier @relation(fields: [supplier_id], references: [id])
+  product_id  String
+  supplier_id String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@id([supplier_id, product_id])
+}
+
+model ProductRack {
+  product_id String
+  rack_id    String
+  products   Product  @relation(fields: [product_id], references: [id])
+  racks      Rack     @relation(fields: [rack_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@id([rack_id, product_id])
+}
+
+model WarehouseRack {
+  rack_id      String
+  warehouse_id String
+  rack         Rack      @relation(fields: [rack_id], references: [id])
+  warehouse    Warehouse @relation(fields: [warehouse_id], references: [id])
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+
+  @@id([warehouse_id, rack_id])
+}
+
+model ProductUnit {
+  unit       Unit     @relation(fields: [unit_id], references: [id])
+  product    Product  @relation(fields: [product_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  unit_id    String
+  product_id String
+
+  @@id([unit_id, product_id])
+}
+
+model ProductStockIn {
+  product_id   String
+  stock_id     String
+  supplier_id  String
+  entry_data   String
+  receive_date String
+  stock        Stock    @relation(fields: [stock_id], references: [id])
+  product      Product  @relation(fields: [product_id], references: [id])
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now()) @updatedAt
+
+  @@id([product_id, stock_id])
+}
+
+model ProductStockOut {
+  product_id       String   @unique
+  stock_id         String
+  supplier_id      String
+  referance_number String
+  out_date         String
+  remarks          String
+  stock            Stock    @relation(fields: [stock_id], references: [id])
+  product          Product  @relation(fields: [product_id], references: [id])
+  created_at       DateTime @default(now())
+  updated_at       DateTime @default(now()) @updatedAt
+
+  @@id([product_id, stock_id])
+}
+
+// Customer
+model Customer {
+  id         String   @id @default(uuid())
+  name       String
+  phone      String
+  email      String
+  address    String
+  detail     String
+  status     String   @ignore
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model CustomerBalance {
+  customer_id String
+  orders      Order    @relation(fields: [customer_id], references: [id])
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@id([customer_id])
+}
+
+model Order {
+  id                  String            @id @default(uuid())
+  order_total         Float
+  additional_charge   Float
+  discount_amount     Float
+  payment_status      String
+  status              String            @ignore
+  partial_paid_amount Float
+  order_notes         String
+  due_amount          Float
+  balance             CustomerBalance[]
+  created_at          DateTime          @default(now())
+  updated_at          DateTime          @updatedAt
+}
