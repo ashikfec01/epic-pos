@@ -1,26 +1,41 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { PrismaService } from 'service/src/infrastructure/database/prisma.service';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { CreateRoleCommand } from './commands/create-role.command';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { RoleEvent } from './events.name';
+import { GetRoleQuery } from './queries/get-role.query';
+import { UpdateRoleCommand } from './commands/update-role.command';
 
 @Injectable()
 export class RoleService {
-  create(createRoleDto: CreateRoleDto) {
-    return 'This action adds a new role';
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+    private readonly eventEmitter: EventEmitter2,
+  ) { }
+  
+  async create(createRoleDto: CreateRoleDto) {
+    return await this.commandBus.execute(new CreateRoleCommand(createRoleDto))
   }
 
-  findAll() {
-    return `This action returns all role`;
+  async findAll() {
+    return await this.eventEmitter.emitAsync(RoleEvent.FIND_MANY_ON_REQUEST);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} role`;
+  async findOne(roleId: string) {
+    return await this.queryBus.execute(new GetRoleQuery(roleId))
+
   }
 
-  update(id: number, updateRoleDto: UpdateRoleDto) {
-    return `This action updates a #${id} role`;
+  async update(id: string, updateRoleDto: UpdateRoleDto) {
+    return await this.commandBus.execute(new UpdateRoleCommand(id, updateRoleDto))
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} role`;
+  async remove(id: string) {
+    return await this.eventEmitter.emitAsync(RoleEvent.DELETE_ON_REQUEST, id);
   }
 }
