@@ -6,6 +6,7 @@ import { DatabaseModule } from './infrastructure/database/database.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { UserModule } from './modules/user/user.module';
 import { RoleModule } from './modules/role/role.module';
+import { RackModule } from './modules/rack/rack.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { RoleModule } from './modules/role/role.module';
     EventEmitterModule.forRoot(), 
     UserModule,
     RoleModule,
+    RackModule,
   ],
   // controllers: [AppController],
   providers: [AppService],

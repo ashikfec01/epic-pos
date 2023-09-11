@@ -1,26 +1,53 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRackDto } from './dto/create-rack.dto';
 import { UpdateRackDto } from './dto/update-rack.dto';
+import { CommandBus, QueryBus } from "@nestjs/cqrs";
+import { CreateRackCommand } from './commands/create-rack.command';
+import { GetRackListQuery } from './queries/get-rack-list.query';
+import { GetRackQuery } from './queries/get-rack.query';
+import { UpdateRackCommannd } from './commands/update-rack.command';
+import { RemoveRackCommand } from './commands/remove-rack.command';
 
 @Injectable()
 export class RackService {
-  create(createRackDto: CreateRackDto) {
-    return 'This action adds a new rack';
+  constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
+  async create(createRackDto: CreateRackDto) {
+    try {
+      return await this.commandBus.execute(new CreateRackCommand(createRackDto))
+    } catch (error) {
+      return error;
+    } 
   }
 
-  findAll() {
-    return `This action returns all rack`;
+  async findAll(limit: number, pageNumber: number) {
+    try {
+      return await this.queryBus.execute(new GetRackListQuery(limit, pageNumber))
+    } catch (error) {
+      return error;
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} rack`;
+  async findOne(id: string) {
+    try {
+      return await this.queryBus.execute(new GetRackQuery(id));
+    } catch (error) {
+      return error;
+    }
   }
 
-  update(id: number, updateRackDto: UpdateRackDto) {
-    return `This action updates a #${id} rack`;
+  async update(id: string, updateRackDto: UpdateRackDto) {
+    try {
+      return await this.commandBus.execute(new UpdateRackCommannd(id, updateRackDto))
+    } catch (error) {
+      return error;
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} rack`;
+  async remove(id: string) {
+    try {
+      return await this.commandBus.execute(new RemoveRackCommand(id));
+    } catch (error) {
+      return error;
+    }
   }
 }

@@ -14,13 +14,13 @@ import { RemoveRoleCommandHandler } from './handlers/remove-role-command.handler
   imports: [CqrsModule, DatabaseModule],
   controllers: [RoleController],
   providers: [
-    RoleService, 
-    RoleEventsHandler, 
-    RoleCreatedEventHandler, 
+    RoleService,
+    RoleEventsHandler,
+    RoleCreatedEventHandler,
     CreateRoleCommandHandler,
-     GetRoleQueryHandler,
-     UpdateRoleCommandHandler,
-     RemoveRoleCommandHandler
-    ],
+    GetRoleQueryHandler,
+    UpdateRoleCommandHandler,
+    RemoveRoleCommandHandler
+  ],
 })
-export class RoleModule {}
+export class RoleModule { }
