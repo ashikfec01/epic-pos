@@ -15,21 +15,25 @@ Learn more about [Nx generators on the docs](https://nx.dev/plugin-features/use-
 ## Running tasks
 
 To execute tasks with Nx use the following syntax:
-
 ```
-nx <target> <project> <...options>
+npx nx serve service
+npx nx serve admin
+npx nx serve pos
+```
+```
+npx nx <target> <project> <...options>
 ```
 
 You can also run multiple targets:
 
 ```
-nx run-many -t <target1> <target2>
+npx nx run-many -t <target1> <target2>
 ```
 
 ..or add `-p` to filter specific projects
 
 ```
-nx run-many -t <target1> <target2> -p <proj1> <proj2>
+npx nx run-many -t <target1> <target2> -p <proj1> <proj2>
 ```
 
 Targets can be defined in the `package.json` or `projects.json`. Learn more [in the docs](https://nx.dev/core-features/run-tasks).
