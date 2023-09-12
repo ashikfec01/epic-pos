@@ -9,6 +9,7 @@ import { RoleModule } from './modules/role/role.module';
 import { RackModule } from './modules/rack/rack.module';
 import { AppGlobalModule } from './app-global.module';
 import { CategoryModule } from './modules/category/category.module';
+import { BrandModule } from './modules/brand/brand.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { CategoryModule } from './modules/category/category.module';
     UserModule,
     RoleModule,
     RackModule,
-    CategoryModule
+    CategoryModule,
+    BrandModule,
   ],
   // controllers: [AppController],
   providers: [AppService],

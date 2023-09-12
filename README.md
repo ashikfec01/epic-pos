@@ -63,9 +63,8 @@ Nx comes with local caching already built-in (check your `nx.json`). On CI you m
 ## Event
 for file_name in created updated removed; 
 do 
-touch events/$file_name-customer.event.ts; 
-touch handlers/$file_name-customer-event.handler.ts; 
-echo $file_name-customer-event.ts; 
+touch events/$file_name-brand.event.ts; 
+touch handlers/$file_name-brand-event.handler.ts; 
 done
 ## Command
 for file_name in create update remove; 
