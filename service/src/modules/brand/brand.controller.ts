@@ -6,37 +6,58 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { BrandService } from './brand.service';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 
-@Controller('brand')
+@Controller('brands')
 export class BrandController {
   constructor(private readonly brandService: BrandService) {}
 
   @Post()
-  create(@Body() createBrandDto: CreateBrandDto) {
-    return this.brandService.create(createBrandDto);
+  async create(@Body() createBrandDto: CreateBrandDto) {
+    try {
+      return await this.brandService.create(createBrandDto);
+    } catch (error) {
+      throw new Error(error) ;
+    }
   }
 
   @Get()
-  findAll() {
-    return this.brandService.findAll();
+  async findAll(@Query('limit')limit: number, @Query('pageNumber') pageNumber: number) {
+    try {
+      return await this.brandService.findAll(limit, pageNumber);
+    } catch (error) {
+      throw new Error(error) 
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.brandService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    try {
+      return await this.brandService.findOne(id);  
+    } catch (error) {
+      throw new Error(error) 
+    }
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBrandDto: UpdateBrandDto) {
-    return this.brandService.update(+id, updateBrandDto);
+  async update(@Param('id') id: string, @Body() updateBrandDto: UpdateBrandDto) {
+    try {
+      return await this.brandService.update(id, updateBrandDto);
+    } catch (error) {
+      throw new Error(error) 
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.brandService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      return await this.brandService.remove(id);
+    } catch (error) {
+     throw new Error(error) 
+    }
   }
 }

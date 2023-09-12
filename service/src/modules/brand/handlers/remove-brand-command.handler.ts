@@ -6,11 +6,14 @@ import { RemoveBrandCommand } from "../commands/remove-brand.command";
 @Injectable()
 @CommandHandler(RemoveBrandCommand)
 export class RemoveBrandCommandHandler implements ICommandHandler<RemoveBrandCommand> {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+  
+    ) {}
 
   async execute(command: RemoveBrandCommand): Promise<any> {
     try {
-      return await this.prismaService
+      return await this.prismaService.brand.delete({where: {id: command.brandId}});
     } catch (error) {
       return error;
     }
