@@ -1,5 +1,5 @@
 import { IQuery } from "@nestjs/cqrs";
 
 export class GetCategoryQuery implements IQuery {
-  constructor(public readonly queryDto) {}
+  constructor(public readonly categoryId: string) {}
 }

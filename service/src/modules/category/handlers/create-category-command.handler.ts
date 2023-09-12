@@ -1,18 +1,20 @@
 import { Injectable } from "@nestjs/common";
-import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
+import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { PrismaService } from "service/src/infrastructure/database/prisma.service";
-import { GetCategoryQuery } from "../queries/get-category.query";
+import { CreateCategoryCommand } from "../commands/create-category.command";
+import { ErrorResponse } from "service/src/common/errors/ErrorResponse";
+import { ErrorMessage } from "service/src/common/errors/db-error.message";
 
 @Injectable()
-@QueryHandler(GetCategoryQuery)
-export class GetCategoryQueryHandler implements IQueryHandler<GetCategoryQuery> {
-  constructor(private readonly prismaService: PrismaService) { }
+@CommandHandler(CreateCategoryCommand)
+export class CreateCategoryCommandHandler implements ICommandHandler<CreateCategoryCommand> {
+  constructor(private readonly prismaService: PrismaService) {}
 
-  async execute(query: GetCategoryQuery): Promise<any> {
+  async execute(command: CreateCategoryCommand): Promise<any> {
     try {
-      return await this.prismaService
+      return await this.prismaService.category.create({data: command.categoryDto})
     } catch (error) {
-      return error;
+      return ErrorResponse(error.code, ErrorMessage[error.code]());
     }
   }
 }

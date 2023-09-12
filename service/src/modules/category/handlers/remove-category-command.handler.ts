@@ -10,7 +10,7 @@ export class RemoveCategoryCommandHandler implements ICommandHandler<RemoveCateg
 
   async execute(command: RemoveCategoryCommand): Promise<any> {
     try {
-      return await this.prismaService
+      return await this.prismaService.category.delete({where: {id: command.categoryId}})
     } catch (error) {
       return error;
     }
