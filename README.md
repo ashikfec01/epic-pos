@@ -55,3 +55,25 @@ Nx comes with local caching already built-in (check your `nx.json`). On CI you m
 - [Join the community](https://nx.dev/community)
 - [Subscribe to the Nx Youtube Channel](https://www.youtube.com/@nxdevtools)
 - [Follow us on Twitter](https://twitter.com/nxdevtools)
+
+## Event
+for file_name in created updated removed; 
+do 
+touch events/$file_name-customer.event.ts; 
+touch handlers/$file_name-customer-event.handler.ts; 
+echo $file_name-customer-event.ts; 
+done
+## Command
+for file_name in create update remove; 
+do 
+touch commands/$file_name-customer.command.ts; 
+touch handlers/$file_name-customer-command.handler.ts; 
+echo $file_name-customer-event.ts; 
+done
+## Query
+for file_name in get list; 
+do 
+touch queries/get-customer.query.ts queries/get-customer-list.query.ts 
+touch handlers/get-customer-query.handler.ts handlers/get-customer-list-query.handler.ts
+echo $file_name-customer-event.ts; 
+done

@@ -8,6 +8,7 @@ import { GetRackQueryHandler } from './handlers/get-rack-query.handler';
 import { DatabaseModule } from 'service/src/infrastructure/database/database.module';
 import { RemoveRackCommandHandler } from './handlers/remove-rack-command.handler';
 import { CqrsModule } from '@nestjs/cqrs';
+import { CreateRackEventHandler } from './handlers/create-rack-event.handler';
 
 @Module({
   imports: [DatabaseModule,CqrsModule],
@@ -19,6 +20,7 @@ import { CqrsModule } from '@nestjs/cqrs';
     GetRackListQueryHandler,
     GetRackQueryHandler,
     RemoveRackCommandHandler,
+    CreateRackEventHandler
   ],
 })
 export class RackModule { }

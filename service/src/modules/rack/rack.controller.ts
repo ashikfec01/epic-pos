@@ -22,9 +22,8 @@ export class RackController {
   }
 
   @Get()
-  async findAll(@Query('limit') limit: number, @Query('pageNumber')pageNumber: number) {
+  async findAll(@Query('limit') limit: number, @Query('pageNumber') pageNumber: number) {
     try {
-      console.log(limit, pageNumber)
       return await this.rackService.findAll(limit,pageNumber);
     } catch (error) {
       return error;

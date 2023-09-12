@@ -1,19 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRackDto } from './dto/create-rack.dto';
 import { UpdateRackDto } from './dto/update-rack.dto';
-import { CommandBus, QueryBus } from "@nestjs/cqrs";
+import { CommandBus, EventBus, EventPublisher, QueryBus } from "@nestjs/cqrs";
 import { CreateRackCommand } from './commands/create-rack.command';
 import { GetRackListQuery } from './queries/get-rack-list.query';
 import { GetRackQuery } from './queries/get-rack.query';
 import { UpdateRackCommannd } from './commands/update-rack.command';
 import { RemoveRackCommand } from './commands/remove-rack.command';
+import { CreateRackEvent } from './events/create-rack.event';
 
 @Injectable()
 export class RackService {
-  constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
+  constructor(
+    private readonly commandBus: CommandBus, 
+    private readonly queryBus: QueryBus,
+    private readonly eventBus: EventBus
+  ) {} 
   async create(createRackDto: CreateRackDto) {
     try {
-      return await this.commandBus.execute(new CreateRackCommand(createRackDto))
+      return await this.commandBus.execute(new CreateRackCommand(createRackDto)).then((rack)=> {
+        this.eventBus.publish(new CreateRackEvent(rack.id));
+        return rack;
+      })
     } catch (error) {
       return error;
     } 
