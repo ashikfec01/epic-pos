@@ -10,6 +10,7 @@ import { RackModule } from './modules/rack/rack.module';
 import { AppGlobalModule } from './app-global.module';
 import { CategoryModule } from './modules/category/category.module';
 import { BrandModule } from './modules/brand/brand.module';
+import { SupplierModule } from './modules/supplier/supplier.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { BrandModule } from './modules/brand/brand.module';
     RackModule,
     CategoryModule,
     BrandModule,
+    SupplierModule
   ],
   // controllers: [AppController],
   providers: [AppService],
