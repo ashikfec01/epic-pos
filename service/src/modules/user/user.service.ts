@@ -1,16 +1,18 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { CommandBus, EventPublisher } from '@nestjs/cqrs';
+import { CommandBus, EventPublisher, QueryBus } from '@nestjs/cqrs';
 import { CreateUserCommand } from './commands/create-user.command';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserCreatedEvent } from './events/user-created.event';
 import { UserCreateRequestEvent } from './events/user-create-request.event';
+import { GetUserListQuery } from './queries/get-user-list.query';
 
 @Injectable({scope: Scope.DEFAULT})
 export class UserService {
   constructor(
     private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
     private readonly eventEmitter: EventEmitter2
     ) {}
 
@@ -20,8 +22,12 @@ export class UserService {
 
   // async find
  
-  findAll() {
-    return `This action returns all user`;
+  async findAll(limit: number, pageNumber: number) {
+    try {
+      return await this.queryBus.execute(new GetUserListQuery(limit, pageNumber))
+    } catch (error) {
+      
+    }
   }
 
   findOne(id: number) {

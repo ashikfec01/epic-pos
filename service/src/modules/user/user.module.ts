@@ -9,11 +9,21 @@ import { UserEventsHander } from './events/user-events.handlers';
 import { UserCreatedEventsHander } from './handlers/user-created.handler';
 import { GetUserQueryHandler } from './handlers/get-user-query.handler';
 import { PasswordHashCommnadHandler } from './handlers/password-hash-command.handler';
+import { GetUserListQueryHandler } from './handlers/get-user-list-query.handler';
 
 @Module({
   imports: [CqrsModule,EventEmitterModule.forRoot(),],
   controllers: [UserController],
-  providers: [PasswordHashCommnadHandler,UserService, CreateUserHandler, PrismaService, UserEventsHander,UserCreatedEventsHander,GetUserQueryHandler],
+  providers: [
+    PasswordHashCommnadHandler,
+    UserService, 
+    CreateUserHandler, 
+    PrismaService, 
+    UserEventsHander,
+    UserCreatedEventsHander,
+    GetUserQueryHandler,
+    GetUserListQueryHandler
+  ],
 })
 export class UserModule {}
  
