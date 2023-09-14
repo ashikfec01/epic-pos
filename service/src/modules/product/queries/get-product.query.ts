@@ -1,5 +1,5 @@
 import { IQuery } from "@nestjs/cqrs";
 
 export class GetProductQuery implements IQuery {
-  constructor(public readonly queryDto) {}
+  constructor(public readonly product_id: string) {}
 }

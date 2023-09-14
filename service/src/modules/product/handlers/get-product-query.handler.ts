@@ -10,7 +10,7 @@ export class GetProductQueryHandler implements IQueryHandler<GetProductQuery> {
 
   async execute(query: GetProductQuery): Promise<any> {
     try {
-      return await this.prismaService
+      return await this.prismaService.product.findFirst({where: {id: query.product_id}});
     } catch (error) {
       return error;
     }

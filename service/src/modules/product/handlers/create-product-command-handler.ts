@@ -10,7 +10,7 @@ export class CreateProductCommandHandler implements ICommandHandler<CreateProduc
 
   async execute(command: CreateProductCommand): Promise<any> {
     try {
-      return await this.prismaService
+      return await this.prismaService.product.create({data: command.dto})
     } catch (error) {
       return error;
     }

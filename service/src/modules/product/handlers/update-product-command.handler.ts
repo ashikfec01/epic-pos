@@ -10,7 +10,10 @@ export class UpdateProductCommandHandler implements ICommandHandler<UpdateProduc
 
   async execute(command: UpdateProductCommand): Promise<any> {
     try {
-      return await this.prismaService
+      return await this.prismaService.product.update({
+        where: {id: command.product_id},
+        data: command.dto,
+      })
     } catch (error) {
       return error;
     }

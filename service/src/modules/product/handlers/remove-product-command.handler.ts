@@ -10,7 +10,7 @@ export class RemoveProductCommandHandler implements ICommandHandler<RemoveProduc
 
   async execute(command: RemoveProductCommand): Promise<any> {
     try {
-      return await this.prismaService
+      return await this.prismaService.product.delete({where: {id: command.product_id}})
     } catch (error) {
       return error;
     }

@@ -1,26 +1,53 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { GetProductListQuery } from './queries/get-product-list.query';
+import { CreateProductCommand } from './commands/create-product.command';
+import { GetProductQuery } from './queries/get-product.query';
+import { UpdateProductCommand } from './commands/update-product.command';
 
 @Injectable()
 export class ProductService {
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ){}
+
+  async create(createProductDto: CreateProductDto) {
+    try {
+      return await this.commandBus.execute(new CreateProductCommand(createProductDto))
+    } catch (error) {
+      
+    }
   }
 
-  findAll() {
-    return `This action returns all product`;
+  async findAll(limit: number, pageNumber: number) {
+    try {
+      return await this.queryBus.execute(new GetProductListQuery(limit, pageNumber))
+    } catch (error) {
+      
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(product_id: string) {
+    try {
+      return await this.queryBus.execute(new GetProductQuery(product_id));
+    } catch (error) {
+      
+    }
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(product_id: string, updateProductDto: UpdateProductDto) {
+    try {
+      return await this.commandBus.execute(new UpdateProductCommand(product_id, updateProductDto))
+    } catch (error) {
+      
+    }
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return `This action removes a #${id} product`;
   }
 }
