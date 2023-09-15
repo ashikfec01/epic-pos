@@ -63,20 +63,23 @@ Nx comes with local caching already built-in (check your `nx.json`). On CI you m
 ## Event
 for file_name in created updated removed; 
 do 
-touch events/$file_name-brand.event.ts; 
-touch handlers/$file_name-brand-event.handler.ts; 
+touch events/$file_name-permission.event.ts; 
+touch handlers/$file_name-permission-event.handler.ts; 
 done
 ## Command
 for file_name in create update remove; 
 do 
-touch commands/$file_name-customer.command.ts; 
-touch handlers/$file_name-customer-command.handler.ts; 
+touch commands/$file_name-permission.command.ts; 
+touch handlers/$file_name-permission-command.handler.ts; 
 echo $file_name-customer-event.ts; 
 done
 ## Query
 for file_name in get list; 
 do 
-touch queries/get-customer.query.ts queries/get-customer-list.query.ts 
-touch handlers/get-customer-query.handler.ts handlers/get-customer-list-query.handler.ts
-echo $file_name-customer-event.ts; 
+touch queries/get-permission.query.ts queries/get-permission-list.query.ts 
+touch handlers/get-permission-query.handler.ts handlers/get-permission-list-query.handler.ts
+echo $file_name-permission-event.ts; 
 done
+
+cqrs-c
+
